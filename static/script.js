@@ -14,8 +14,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     taskList.addEventListener("click", function(event) {
-        const taskItem = event.target.closest(".task");
-        if (taskItem) {
+        const target = event.target;
+        if (target.matches(".task input[type='checkbox']")) {
+            const taskItem = target.closest(".task");
             taskItem.classList.toggle("strikethrough");
         }
     });
