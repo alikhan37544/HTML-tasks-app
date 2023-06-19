@@ -7,8 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
         const taskText = taskInput.value.trim();
         if (taskText !== "") {
-            const newTask = createTaskElement(taskText);
-            taskList.appendChild(newTask);
+            addTask(taskText);
             taskInput.value = "";
         }
     });
@@ -16,14 +15,46 @@ document.addEventListener("DOMContentLoaded", function() {
     taskList.addEventListener("click", function(event) {
         const target = event.target;
         if (target.matches(".task input[type='checkbox']")) {
-            const taskItem = target.closest(".task");
-            taskItem.classList.toggle("strikethrough");
+            const taskId = target.parentNode.dataset.taskId;
+            updateTaskStatus(taskId, target.checked);
         }
     });
 
-    function createTaskElement(taskText) {
+    function addTask(taskText) {
+        const formData = new FormData();
+        formData.append("task", taskText);
+        fetch('/tasks', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const taskId = data.taskId;
+            const newTask = createTaskElement(taskId, taskText);
+            taskList.appendChild(newTask);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function updateTaskStatus(taskId, completed) {
+        const formData = new FormData();
+        formData.append("taskId", taskId);
+        formData.append("completed", completed);
+        fetch('/update_task', {
+            method: 'POST',
+            body: formData
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function createTaskElement(taskId, taskText) {
         const taskItem = document.createElement("li");
         taskItem.classList.add("task");
+        taskItem.dataset.taskId = taskId;
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         const taskTextElement = document.createElement("span");
