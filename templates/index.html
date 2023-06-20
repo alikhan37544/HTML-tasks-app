@@ -15,12 +15,7 @@
         <div class="tab-content" id="current-tasks-content">
             <div id="task-container">
                 <ul id="task-list">
-                    {% for task in tasks %}
-                    <li class="task{% if task.completed %} strikethrough{% endif %}" data-task-id="{{ task.task_id }}">
-                        <input type="checkbox" {% if task.completed %}checked{% endif %}>
-                        <span>{{ task.task_text }}</span>
-                    </li>
-                    {% endfor %}
+                    <!-- Tasks will be dynamically added here -->
                 </ul>
             </div>
 

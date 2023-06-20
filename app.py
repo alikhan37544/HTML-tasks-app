@@ -14,7 +14,7 @@ def tasks():
     if request.method == 'POST':
         task_text = request.form['task']
         cursor = db.cursor()
-        cursor.execute('INSERT INTO tasks (task_text) VALUES (%s)', (task_text,))
+        cursor.execute('INSERT INTO tasks (task_text, completed) VALUES (%s, %s)', (task_text, 0))
         db.commit()
         cursor.close()
 

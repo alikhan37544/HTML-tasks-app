@@ -48,7 +48,9 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateTaskStatus(taskId, completed) {
         const formData = new FormData();
         formData.append("taskId", taskId);
-        formData.append("completed", completed);
+        formData.append("completed", completed ? 1 : 0);
+        // ... rest of the code
+        
         fetch('/update_task', {
             method: 'POST',
             body: formData
@@ -58,26 +60,35 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    function createTaskElement(taskId, taskText, completed = false) {
+    function createTaskElement(taskId, taskText, completed) {
         const taskItem = document.createElement("li");
         taskItem.classList.add("task");
         taskItem.dataset.taskId = taskId;
+    
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = completed;
+    
         const taskTextElement = document.createElement("span");
         taskTextElement.textContent = taskText;
+    
         taskItem.appendChild(checkbox);
         taskItem.appendChild(taskTextElement);
+    
+        if (completed) {
+            taskItem.classList.add("strikethrough");
+        }
+    
         return taskItem;
     }
+    
 
     function loadCurrentTasks() {
         fetch('/tasks')
             .then(response => response.json())
             .then(data => {
                 data.forEach(task => {
-                    const newTask = createTaskElement(task.task_id, task.task_text, task.completed);
+                    const newTask = createTaskElement(task.id, task.task_text, task.completed);
                     taskList.appendChild(newTask);
                 });
             })
@@ -85,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error('Error:', error);
             });
     }
+    
 
     function loadTaskHistory() {
         fetch('/task_history')
