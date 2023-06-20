@@ -50,7 +50,8 @@ def task_history():
     cursor.execute('SELECT * FROM tasks ORDER BY created_at DESC')
     task_history = cursor.fetchall()
     cursor.close()
-    return jsonify(task_history)
+    print(task_history)
+    return render_template('task_history.html', task_history=task_history)
 
 
 if __name__ == '__main__':

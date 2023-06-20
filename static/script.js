@@ -98,18 +98,18 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
 
-    function loadTaskHistory() {
-        fetch('/task_history')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(task => {
-                    const taskItem = document.createElement("li");
-                    taskItem.textContent = task.task_text;
-                    taskHistoryList.appendChild(taskItem);
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
+    // function loadTaskHistory() {
+    //     fetch('/task_history')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             data.forEach(task => {
+    //                 const taskItem = document.createElement("li");
+    //                 taskItem.textContent = task.task_text;
+    //                 taskHistoryList.appendChild(taskItem);
+    //             });
+    //         })
+    //         .catch(error => {
+    //             console.error('Error:', error);
+    //         });
+    // }
 });
