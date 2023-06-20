@@ -18,12 +18,30 @@ def tasks():
         db.commit()
         cursor.close()
 
+        cursor = db.cursor()
+        cursor.execute('SELECT LAST_INSERT_ID()')
+        task_id = cursor.fetchone()[0]
+        cursor.close()
+
+        return jsonify(taskId=task_id)
+
     cursor = db.cursor()
     cursor.execute('SELECT * FROM tasks')
     tasks = cursor.fetchall()
     cursor.close()
-    
+
     return render_template('index.html', tasks=tasks)
+
+
+@app.route('/update_task', methods=['POST'])
+def update_task():
+    task_id = request.form['taskId']
+    completed = request.form['completed'].capitalize()
+    cursor = db.cursor()
+    cursor.execute('UPDATE tasks SET completed = %s WHERE id = %s', (completed, task_id))
+    db.commit()
+    cursor.close()
+    return jsonify(success=True)
 
 
 @app.route('/task_history')

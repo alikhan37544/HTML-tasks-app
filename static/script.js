@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const taskList = document.getElementById("task-list");
     const addTaskForm = document.getElementById("add-task-form");
     const taskInput = document.getElementById("task-input");
+    const taskHistoryList = document.getElementById("task-history-list");
 
     addTaskForm.addEventListener("submit", function(event) {
         event.preventDefault();
@@ -16,8 +17,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const target = event.target;
         if (target.matches(".task input[type='checkbox']")) {
             const taskId = target.parentNode.dataset.taskId;
-            updateTaskStatus(taskId, target.checked);
+            const completed = target.checked;
+            updateTaskStatus(taskId, completed);
         }
+    });
+
+    window.addEventListener("load", function() {
+        loadCurrentTasks();
+        loadTaskHistory();
     });
 
     function addTask(taskText) {
@@ -51,16 +58,46 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    function createTaskElement(taskId, taskText) {
+    function createTaskElement(taskId, taskText, completed = false) {
         const taskItem = document.createElement("li");
         taskItem.classList.add("task");
         taskItem.dataset.taskId = taskId;
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
+        checkbox.checked = completed;
         const taskTextElement = document.createElement("span");
         taskTextElement.textContent = taskText;
         taskItem.appendChild(checkbox);
         taskItem.appendChild(taskTextElement);
         return taskItem;
+    }
+
+    function loadCurrentTasks() {
+        fetch('/tasks')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(task => {
+                    const newTask = createTaskElement(task.task_id, task.task_text, task.completed);
+                    taskList.appendChild(newTask);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function loadTaskHistory() {
+        fetch('/task_history')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(task => {
+                    const taskItem = document.createElement("li");
+                    taskItem.textContent = task.task_text;
+                    taskHistoryList.appendChild(taskItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 });
