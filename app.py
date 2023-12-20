@@ -3,7 +3,7 @@ import pymysql
 
 app = Flask(__name__)
 
-db = pymysql.connect(host='localhost', user='root', password='admin', database='tasks_db')
+db = pymysql.connect(host='localhost', user='tasks_user', password='admin', database='tasks_db')
 
 @app.route('/')
 def index():
